@@ -16,7 +16,12 @@ function route($httpMethods, $route, $callback, $exit = true)
     }
     $matches = null;
     $regex = '/' . str_replace('/', '\/', $route) . '/';
+
+    
+
     if (!preg_match_all($regex, $path, $matches)) {
+
+        error_log($_SERVER['REQUEST_METHOD']);
         return;
     }
     if (empty($matches)) {
@@ -28,6 +33,9 @@ function route($httpMethods, $route, $callback, $exit = true)
                 $params[$k] = $v[0];
             }
         }
+
+        $params = json_decode(json_encode($params));
+
         $callback($params);
     }
     if ($exit) {
@@ -53,14 +61,80 @@ function getItemsMeta($name = 'napisy') {
     return $indexes;
 }
 
-function getItems($name = 'napisy', $sinceDate = null, $toDate = null) {
+
+function getItems($name = 'napisy', $sinceDate = NULL, $toDate = NULL) {
     // pobierz dane według ram czasowych
+    $metas = getItemsMeta($name);
+    $dirpath = __DIR__.'/../storage/'.$name;
+
+    // filter metas by time
+
+    //$filtered = $metas;
+
+    error_log("err:".$sinceDate);
+
+    $filtered = [];
+
+    foreach($metas as $key=>$value) {
+        $add = true;
+
+        if($sinceDate != NULL && $value->sinceDate < $sinceDate && $value->toDate < $sinceDate) {
+            $add = false;
+        }
+
+        if($toDate != NULL && $value->sinceDate > $toDate && $value->toDate > $toDate) {
+            $add = false;
+        }
+
+        if($add) {
+            array_push($filtered, $value);
+        }
+    }
+
+    // get items
+
+    $resArray = [];
+
+    foreach($filtered as $meta) {
+        $filepath = $dirpath.'/'.$meta->id.'.json';
+        if(file_exists($filepath)) {
+            array_push($resArray, json_decode(file_get_contents($filepath)));
+        }
+    }
+
+    return $resArray;
+}
+
+function getItem($id, $name = 'napisy') {
+    $dirpath = __DIR__.'/../storage/'.$name;
+
+    $filepath = $dirpath.'/'.$id.'.json';
+
+    if(!file_exists($filepath)) {
+        return NULL;
+    }
+
+    return json_decode(file_get_contents($filepath));
+}
+
+function deleteItem($id, $name = 'napisy') {
+    $dirpath = __DIR__.'/../storage/'.$name;
+
+    $filepath = $dirpath.'/'.$id.'.json';
+
+    if(!file_exists($filepath)) {
+        return NULL;
+    }
+
+    unlink($filepath);
+
+    return json_decode('{"result": "success"}');
 }
 
 function putItem($id, $item, $name = 'napisy') {
     // wstaw dane według Id
     $dirpath = __DIR__.'/../storage/'.$name;
-    $filepath = $dirpath.'/'.$name.'.json';
+    $filepath = $dirpath.'/'.$id.'.json';
     $meta_filepath = __DIR__."/../storage/".$name.'.json';
 
     if(!file_exists($dirpath)) {
@@ -100,7 +174,8 @@ function changeItem($item, $found = NULL) {
 
     $res->sinceDate = $item != NULL && $item->sinceDate != NULL ? $item->sinceDate : 0;
     $res->toDate = $item != NULL && $item->toDate != NULL ? $item->toDate : 0;
-    $res->updatedAt = microtime(false);
+    $res->updatedAt = microtime(true) * 1000;
+    $res->id = $item->id;
 
     return $res;
 }
