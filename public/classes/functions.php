@@ -21,7 +21,7 @@ function route($httpMethods, $route, $callback, $exit = true)
 
     if (!preg_match_all($regex, $path, $matches)) {
 
-        error_log($_SERVER['REQUEST_METHOD']);
+        //error_log($_SERVER['REQUEST_METHOD']);
         return;
     }
     if (empty($matches)) {
@@ -71,7 +71,6 @@ function getItems($name = 'napisy', $sinceDate = NULL, $toDate = NULL) {
 
     //$filtered = $metas;
 
-    error_log("err:".$sinceDate);
 
     $filtered = [];
 
@@ -180,6 +179,35 @@ function changeItem($item, $found = NULL) {
     $res->id = $item->id;
 
     return $res;
+}
+
+function getInfo($name = 'napisy') {
+    $now = microtime(true) * 1000;
+
+    $metas = getItemsMeta();
+
+    $dirpath = __DIR__.'/../storage/'.$name;
+
+    $items = [];
+
+    foreach($metas as $key => $value) {
+        if($value->sinceDate > 0 && $value->toDate > 0) {
+            if($now >= $value->sinceDate && $now <= $value->toDate) {
+                $filepath = $dirpath.'/'.$value->id.'.json';
+
+                if(file_exists($filepath)) {
+                    array_push($items, json_decode(file_get_contents($filepath)));
+                }
+                
+            }
+        }
+    }
+
+    return $items;
+}
+
+function getDefaultGreeting() {
+    return "SERDECZNIE WITAMY I ŻYCZYMY UDANYCH ZAKUPÓW!";
 }
 
 function headerJson() {

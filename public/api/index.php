@@ -4,6 +4,44 @@ require_once __DIR__.'/../classes/functions.php';
 
 $prefix = '/api/';
 
+
+route('GET', '^'.$prefix.'lista/info$', function() {
+
+    $inter = 0;
+
+    if(isset($_GET['int']) && is_numeric($_GET['int'])) {
+        $inter = intval($_GET['int']);
+    }
+
+    $items = getInfo();
+
+    if($inter == 0) {
+        headerJson();
+        echo json_encode($items);
+    } else {
+
+        header('Content-Type: text/plain; charset=utf-8;');
+
+
+        if(sizeof($items) == 0) {
+            echo getDefaultGreeting();
+        } else {
+
+            $intStr = str_repeat(' ', $inter);
+
+            $nap_list = [];
+
+            foreach($items as $item) {
+                array_push($nap_list, $item->napis);
+            }
+
+            echo implode($intStr, $nap_list);
+
+        }
+    }
+    
+});
+
 route('GET', '^'.$prefix.'lista/(?<id>[0-9a-zA-Z\-\_]*)$', function($params) {
     headerJson();
 
@@ -21,7 +59,7 @@ route('GET', '^'.$prefix.'lista/(?<id>[0-9a-zA-Z\-\_]*)$', function($params) {
 route("DELETE", '^'.$prefix.'lista/(?<id>[0-9a-zA-Z\-\_]*)$', function($params) {
     headerJson();
 
-    error_log($params->id);
+    //error_log($params->id);
 
     $res = deleteItem($params->id, 'napisy');
 
