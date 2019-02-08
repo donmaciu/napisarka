@@ -7,8 +7,10 @@
     <title>Napisarka</title>
 
     <link rel="stylesheet" href="/css/normalize.css">
+    
     <link rel="stylesheet" href="/css/blueprint-icons.css">
     <link rel="stylesheet" href="/css/blueprint.css">
+    <link rel="stylesheet" href="/css/blueprint-datetime.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
     <link rel="stylesheet" href="/css/react-big-calendar.css">
 

@@ -80,10 +80,12 @@ function getItems($name = 'napisy', $sinceDate = NULL, $toDate = NULL) {
 
         if($sinceDate != NULL && $value->sinceDate < $sinceDate && $value->toDate < $sinceDate) {
             $add = false;
+            //error_log('sd: ' . $sinceDate . ' ::: ' . $value->sinceDate . ' - ' . $value->toDate .  ' bad');
         }
 
         if($toDate != NULL && $value->sinceDate > $toDate && $value->toDate > $toDate) {
             $add = false;
+            //error_log('td: ' . $toDate . ' ::: ' . $value->sinceDate . ' - ' . $value->toDate .  ' bad');
         }
 
         if($add) {

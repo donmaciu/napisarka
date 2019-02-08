@@ -44,7 +44,7 @@ route('GET', '^'.$prefix.'lista$', function() {
     }
 
     if(isset($_GET['toDate']) && is_numeric($_GET['sinceDate'])) {
-        $sinceDate = intval($_GET['toDate']);
+        $toDate = intval($_GET['toDate']);
     }
 
 
