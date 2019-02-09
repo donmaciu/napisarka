@@ -4,6 +4,46 @@ require_once __DIR__.'/../classes/functions.php';
 
 $prefix = '/api/';
 
+route('GET', '^'.$prefix.'lista/rss$', function() {
+
+    $items = getInfo();
+
+    header("Content-Type: application/rss+xml; charset=utf-8");
+
+    echo '<?xml version="1.0" encoding="UTF-8"?>';
+    echo '<rss version="2.0">';
+    echo '<channel>';
+    echo '<title>Napisy</title>';
+
+    $titles = [];
+
+    $text = '';
+
+    if(sizeof($items) == 0) {
+        $text = getDefaultGreeting();
+
+        array_push($titles, $text);
+
+    } else {
+
+        foreach($items as $item) {
+            array_push($titles, $item->napis);
+        }
+
+    }
+
+    
+
+    // foreach($titles as $title) {
+    //     echo '<item><title>'.$title.'</title></item>';
+    // }
+
+    echo '<item><title>'.implode('                    ', $titles).'</title></item>';
+    
+
+    echo '</channel>';
+    echo '</rss>';
+});
 
 route('GET', '^'.$prefix.'lista/info$', function() {
 
@@ -78,11 +118,11 @@ route('GET', '^'.$prefix.'lista$', function() {
     $toDate = NULL;
 
     if(isset($_GET['sinceDate']) && is_numeric($_GET['sinceDate'])) {
-        $sinceDate = intval($_GET['sinceDate']);
+        $sinceDate = $_GET['sinceDate'];
     }
 
     if(isset($_GET['toDate']) && is_numeric($_GET['sinceDate'])) {
-        $toDate = intval($_GET['toDate']);
+        $toDate = $_GET['toDate'];
     }
 
 

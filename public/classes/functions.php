@@ -76,7 +76,7 @@ function getItems($name = 'napisy', $sinceDate = NULL, $toDate = NULL) {
 
     foreach($metas as $key=>$value) {
         $add = true;
-
+        
         if($sinceDate != NULL && $value->sinceDate < $sinceDate && $value->toDate < $sinceDate) {
             $add = false;
             //error_log('sd: ' . $sinceDate . ' ::: ' . $value->sinceDate . ' - ' . $value->toDate .  ' bad');
