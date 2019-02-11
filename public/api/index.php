@@ -22,12 +22,12 @@ route('GET', '^'.$prefix.'lista/rss$', function() {
     if(sizeof($items) == 0) {
         $text = getDefaultGreeting();
 
-        array_push($titles, $text);
+        array_push($titles, ["text" => $text, "date" => date("D, d M Y H:i:s T")]);
 
     } else {
 
         foreach($items as $item) {
-            array_push($titles, $item->napis);
+            array_push($titles, ["text" => $item->napis, "date" => date("D, d M Y H:i:s T", $item->sinceDate / 1000)]);
         }
 
     }
@@ -35,7 +35,7 @@ route('GET', '^'.$prefix.'lista/rss$', function() {
     
 
      foreach($titles as $title) {
-         echo '<item><title>'.$title.'</title></item>';
+         echo '<item><pubDate>'.$title["date"].'</pubDate><title>'.$title["text"].'</title></item>';
      }
 
     //echo '<item><title>'.implode('                    ', $titles).'</title></item>';
