@@ -34,11 +34,11 @@ route('GET', '^'.$prefix.'lista/rss$', function() {
 
     
 
-    // foreach($titles as $title) {
-    //     echo '<item><title>'.$title.'</title></item>';
-    // }
+     foreach($titles as $title) {
+         echo '<item><title>'.$title.'</title></item>';
+     }
 
-    echo '<item><title>'.implode('                    ', $titles).'</title></item>';
+    //echo '<item><title>'.implode('                    ', $titles).'</title></item>';
     
 
     echo '</channel>';
